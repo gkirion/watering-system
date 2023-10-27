@@ -1,0 +1,38 @@
+version: '2'
+
+services:
+  watering-system:
+    image: watering-system
+    networks:
+      - watering-network
+    ports:
+      - 8092:8090
+    depends_on: 
+      - rabbitmq
+      - mysql-server
+    restart: unless-stopped
+
+  rabbitmq:
+    image: rabbitmq:3.10-management
+    container_name: message-queue
+    networks:
+      - watering-network
+    ports:
+      - 5672:5672
+      - 15672:15672
+
+  mysql-server:
+    image: mysql:latest
+    container_name: database-server
+    networks:
+      - watering-network
+    environment:
+      MYSQL_ROOT_PASSWORD: cskir88
+      MYSQL_DATABASE: watering-db
+      MYSQL_USER: gkirion
+      MYSQL_PASSWORD: cskir88
+
+networks:
+  watering-network:
+    name: watering-network
+    driver: bridge
